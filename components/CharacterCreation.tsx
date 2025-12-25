@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { Degree, FounderProfile } from '../types';
+import { Degree, FounderProfile, Theme, Difficulty } from '../types';
 
 interface Props {
   onComplete: (profile: FounderProfile) => void;
@@ -11,103 +12,120 @@ const CharacterCreation: React.FC<Props> = ({ onComplete, isLoading }) => {
     name: '',
     degree: Degree.BACHELORS,
     background: '',
-    specialty: ''
+    specialty: '',
+    theme: 'light',
+    difficulty: 'bootstrapper'
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (profile.name && profile.background && profile.specialty) {
-      onComplete(profile);
-    }
+  const handleRoll = () => {
+    const names = ["Aria Vance", "Kaelen Moss", "Zoe Chen", "Julian Thorne"];
+    const backgrounds = ["Fusion Energy", "Spatial Computing", "Bio-Synthetic Labs", "Autonomous Logistics"];
+    const specialties = ["Algorithmic Strategy", "Full-Stack Dev", "Industrial Design", "Growth Ops"];
+    setProfile(prev => ({
+      ...prev,
+      name: names[Math.floor(Math.random() * names.length)],
+      background: backgrounds[Math.floor(Math.random() * backgrounds.length)],
+      specialty: specialties[Math.floor(Math.random() * specialties.length)],
+    }));
   };
 
   return (
-    <div className="max-w-xl w-full mx-auto bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+    <div className="max-w-2xl w-full mx-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 rounded-3xl shadow-2xl relative">
+      <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-sky-400 via-purple-400 to-pink-400 rounded-t-3xl"></div>
       
-      <h1 className="text-3xl font-bold text-white mb-2">New Founder Profile</h1>
-      <p className="text-slate-400 mb-8">Define who you are before you change the world.</p>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="mb-8 flex justify-between items-start">
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Full Name</label>
-          <input
-            type="text"
-            required
-            className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
-            placeholder="e.g. Elon Jobs"
-            value={profile.name}
-            onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-          />
+          <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">The Launchpad</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-lg">Define your trajectory.</p>
         </div>
+        <button onClick={handleRoll} className="p-3 bg-slate-100 dark:bg-slate-800 rounded-2xl hover:bg-slate-200 transition-all text-xl">🎲</button>
+      </div>
 
-        <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Highest Education</label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {Object.values(Degree).map((deg) => (
-              <button
-                key={deg}
-                type="button"
-                onClick={() => setProfile({ ...profile, degree: deg })}
-                className={`px-3 py-2 text-sm rounded-md border transition-all ${
-                  profile.degree === deg
-                    ? 'bg-blue-600 border-blue-500 text-white'
-                    : 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700'
-                }`}
-              >
-                {deg}
-              </button>
-            ))}
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Full Name</label>
+            <input
+              type="text"
+              className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 focus:ring-2 ring-sky-500"
+              value={profile.name}
+              onChange={e => setProfile({...profile, name: e.target.value})}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Education</label>
+            <select 
+              className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 focus:ring-2 ring-sky-500"
+              value={profile.degree}
+              onChange={e => setProfile({...profile, degree: e.target.value as Degree})}
+            >
+              {Object.values(Degree).map(d => <option key={d} value={d}>{d}</option>)}
+            </select>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Major / Background</label>
+            <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Domain Experience</label>
             <input
               type="text"
-              required
-              className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              placeholder="e.g. Comp Sci, Art History"
+              className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 focus:ring-2 ring-sky-500"
+              placeholder="e.g. Bio-Tech"
               value={profile.background}
-              onChange={(e) => setProfile({ ...profile, background: e.target.value })}
+              onChange={e => setProfile({...profile, background: e.target.value})}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Key Strength</label>
+            <label className="block text-xs font-bold uppercase text-slate-400 mb-2">Core Competency</label>
             <input
               type="text"
-              required
-              className="w-full bg-slate-800 border border-slate-700 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              placeholder="e.g. Coding, Sales, Vision"
+              className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 focus:ring-2 ring-sky-500"
+              placeholder="e.g. Sales"
               value={profile.specialty}
-              onChange={(e) => setProfile({ ...profile, specialty: e.target.value })}
+              onChange={e => setProfile({...profile, specialty: e.target.value})}
             />
           </div>
         </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-4 border-t border-slate-100 dark:border-slate-800">
+          <div>
+            <label className="block text-xs font-bold uppercase text-slate-400 mb-3">Ambience (Theme)</label>
+            <div className="flex gap-2">
+              {(['light', 'dark', 'neon'] as Theme[]).map(t => (
+                <button
+                  key={t}
+                  onClick={() => setProfile({...profile, theme: t})}
+                  className={`flex-1 py-2 text-xs font-bold rounded-lg border-2 transition-all ${profile.theme === t ? 'border-sky-500 bg-sky-50 dark:bg-sky-900/30 text-sky-600' : 'border-slate-100 dark:border-slate-800'}`}
+                >
+                  {t.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-bold uppercase text-slate-400 mb-3">Stakeholder Stakes (Difficulty)</label>
+            <div className="flex gap-2">
+              {(['bootstrapper', 'venture-scale'] as Difficulty[]).map(d => (
+                <button
+                  key={d}
+                  onClick={() => setProfile({...profile, difficulty: d})}
+                  className={`flex-1 py-2 text-xs font-bold rounded-lg border-2 transition-all ${profile.difficulty === d ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/30 text-purple-600' : 'border-slate-100 dark:border-slate-800'}`}
+                >
+                  {d.replace('-', ' ').toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <button
-          type="submit"
-          disabled={isLoading}
-          className={`w-full py-4 text-lg font-bold rounded-xl transition-all ${
-            isLoading
-              ? 'bg-slate-700 text-slate-500 cursor-not-allowed'
-              : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:shadow-lg hover:shadow-blue-500/25 active:scale-[0.98]'
-          }`}
+          onClick={() => onComplete(profile)}
+          disabled={!profile.name || isLoading}
+          className="w-full py-5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-xl rounded-2xl shadow-xl hover:-translate-y-1 transition-all disabled:opacity-50"
         >
-          {isLoading ? (
-            <span className="flex items-center justify-center gap-2">
-              <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-              Initializing Simulation...
-            </span>
-          ) : (
-            "Start Journey"
-          )}
+          {isLoading ? "CALCULATING VECTORS..." : "IGNITE ENGINE"}
         </button>
-      </form>
+      </div>
     </div>
   );
 };
